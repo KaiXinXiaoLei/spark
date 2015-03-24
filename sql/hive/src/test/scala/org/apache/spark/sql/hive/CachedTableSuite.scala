@@ -86,12 +86,12 @@ class CachedTableSuite extends QueryTest {
   }
 
   test("Drop cached table") {
-    sql("CREATE TABLE test(a INT)")
-    cacheTable("test")
-    sql("SELECT * FROM test").collect()
-    sql("DROP TABLE test")
+    sql("CREATE TABLE cachedTableTest(a INT)")
+    cacheTable("cachedTableTest")
+    sql("SELECT * FROM cachedTableTest").collect()
+    sql("DROP TABLE cachedTableTest")
     intercept[org.apache.hadoop.hive.ql.metadata.InvalidTableException] {
-      sql("SELECT * FROM test").collect()
+      sql("SELECT * FROM cachedTableTest").collect()
     }
   }
 
