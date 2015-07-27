@@ -329,7 +329,7 @@ private[spark] class ExecutorAllocationManager(
       return 0
     }
 
-    val oldNumExecutorsTarget = numExecutorsTarget
+    val oldNumExecutorsTarget = numExecutorsTarget - executorsPendingToRemove.size
     // There's no point in wasting time ramping up to the number of executors we already have, so
     // make sure our target is at least as much as our current allocation:
     numExecutorsTarget = math.max(numExecutorsTarget, executorIds.size)
