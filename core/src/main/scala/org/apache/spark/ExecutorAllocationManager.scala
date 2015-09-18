@@ -321,6 +321,7 @@ private[spark] class ExecutorAllocationManager(
    * @return the number of additional executors actually requested.
    */
   private def addExecutors(maxNumExecutorsNeeded: Int): Int = {
+    val numExistingExecutors = executorIds.size - executorsPendingToRemove.size
     // Do not request more executors if it would put our target over the upper bound
     if (numExecutorsTarget >= maxNumExecutors) {
       logDebug(s"Not adding executors because our current target total " +
@@ -329,7 +330,6 @@ private[spark] class ExecutorAllocationManager(
       return 0
     }
 
-    val oldNumExecutorsTarget = numExecutorsTarget
     // There's no point in wasting time ramping up to the number of executors we already have, so
     // make sure our target is at least as much as our current allocation:
     numExecutorsTarget = math.max(numExecutorsTarget, executorIds.size)
@@ -340,7 +340,7 @@ private[spark] class ExecutorAllocationManager(
     // Ensure that our target fits within configured bounds:
     numExecutorsTarget = math.max(math.min(numExecutorsTarget, maxNumExecutors), minNumExecutors)
 
-    val delta = numExecutorsTarget - oldNumExecutorsTarget
+    val delta = numExecutorsTarget - numExistingExecutors
 
     // If our target has not changed, do not send a message
     // to the cluster manager and reset our exponential growth
